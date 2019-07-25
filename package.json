@@ -1,0 +1,32 @@
+{
+  "name": "simplified-avito-page",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vasyaslife/simplified-avito-page.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vasyaslife/simplified-avito-page/issues"
+  },
+  "homepage": "https://github.com/vasyaslife/simplified-avito-page#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-es6-promise": "^1.1.1",
+    "webpack": "^4.37.0",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.8",
+    "formdata-polyfill": "^3.0.18",
+    "nodelist-foreach-polyfill": "^1.2.0"
+  }
+}
