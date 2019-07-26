@@ -4,19 +4,25 @@ require('formdata-polyfill');
 
 window.addEventListener('DOMContentLoaded', () => {
     'use strict';
-    let sendBtn = document.querySelector('.search__btn');
+    let searchItems = require('./modules/search-items.js'),
+        requestData = require('./modules/request-data.js'),
+        createProduct = require('./modules/create-product.js');
 
 
-    sendBtn.addEventListener('click', function(e) {
-        e.preventDefault();
+    // url to data
+    let productUrl = './js/json/products.json',
+    usersUrl = './js/json/sellers.json';
+    
+    // create all products
+    let productWrap = document.querySelector('.products div div');
+    createProduct(productWrap, requestData(productUrl), requestData(usersUrl));
 
-        let formData = new FormData(document.querySelector('.search__form'));
-        let obj = {};
-        formData.forEach((value, key) => {
-            obj[key] = value;
-        });
 
-        console.log(obj);
-    });
+    // search products
+    let searchBtn = document.querySelector('.search__btn'),
+        searchForm = document.querySelector('.search__form');
+
+
+    searchItems(searchBtn, searchForm, requestData(productUrl), requestData(usersUrl));
 
 });

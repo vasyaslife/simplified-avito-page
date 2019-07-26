@@ -1546,6 +1546,83 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/js/modules/create-product.js":
+/*!******************************************!*\
+  !*** ./src/js/modules/create-product.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function createProduct(wrap) {
+  var products = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var users = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  products.forEach(function (item) {
+    var div = document.createElement('div');
+    div.classList.add('col-4');
+    div.innerHTML = "";
+  });
+}
+
+module.exports = createProduct;
+
+/***/ }),
+
+/***/ "./src/js/modules/request-data.js":
+/*!****************************************!*\
+  !*** ./src/js/modules/request-data.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function requestData(url) {
+  var data;
+  var request = new XMLHttpRequest();
+  request.open('GET', url, false);
+
+  request.onreadystatechange = function () {
+    if (request.readyState === 4) {
+      if (request.status === 200 || request.status == 0) {
+        data = request.responseText;
+        data = JSON.parse(data);
+      }
+    }
+  };
+
+  request.send(null);
+  return data.data;
+}
+
+module.exports = requestData;
+
+/***/ }),
+
+/***/ "./src/js/modules/search-items.js":
+/*!****************************************!*\
+  !*** ./src/js/modules/search-items.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function searchItems(searchBtn, form) {
+  var products = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var users = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+  searchBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var formData = new FormData(form);
+    var searchInfo = {};
+    formData.forEach(function (value, key) {
+      searchInfo[key] = value;
+    });
+    console.log(searchInfo);
+    console.log(products);
+    console.log(users);
+  });
+}
+
+module.exports = searchItems;
+
+/***/ }),
+
 /***/ "./src/js/script.js":
 /*!**************************!*\
   !*** ./src/js/script.js ***!
@@ -1562,16 +1639,20 @@ __webpack_require__(/*! formdata-polyfill */ "./node_modules/formdata-polyfill/f
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  var sendBtn = document.querySelector('.search__btn');
-  sendBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    var formData = new FormData(document.querySelector('.search__form'));
-    var obj = {};
-    formData.forEach(function (value, key) {
-      obj[key] = value;
-    });
-    console.log(obj);
-  });
+  var searchItems = __webpack_require__(/*! ./modules/search-items.js */ "./src/js/modules/search-items.js"),
+      requestData = __webpack_require__(/*! ./modules/request-data.js */ "./src/js/modules/request-data.js"),
+      createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js"); // url to data
+
+
+  var productUrl = './js/json/products.json',
+      usersUrl = './js/json/sellers.json'; // create all products
+
+  var productWrap = document.querySelector('.products div div');
+  createProduct(productWrap, requestData(productUrl), requestData(usersUrl)); // search products
+
+  var searchBtn = document.querySelector('.search__btn'),
+      searchForm = document.querySelector('.search__form');
+  searchItems(searchBtn, searchForm, requestData(productUrl), requestData(usersUrl));
 });
 
 /***/ })
