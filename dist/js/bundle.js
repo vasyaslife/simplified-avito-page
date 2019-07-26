@@ -1561,6 +1561,17 @@ __webpack_require__(/*! formdata-polyfill */ "./node_modules/formdata-polyfill/f
 
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
+
+  var sendBtn = document.querySelector('.search__btn');
+  sendBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var formData = new FormData(document.querySelector('.search__form'));
+    var obj = {};
+    formData.forEach(function (value, key) {
+      obj[key] = value;
+    });
+    console.log(obj);
+  });
 });
 
 /***/ })
