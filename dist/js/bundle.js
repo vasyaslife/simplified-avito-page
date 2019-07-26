@@ -1556,10 +1556,21 @@ module.exports = g;
 function createProduct(wrap) {
   var products = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var users = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  wrap.innerHTML = '';
   products.forEach(function (item) {
     var div = document.createElement('div');
-    div.classList.add('col-4');
-    div.innerHTML = "";
+    div.classList.add('col-6');
+    var price = item.price || 'Цена не указана',
+        rating = users[item.relationships.seller].rating,
+        userName = users[item.relationships.seller].name,
+        pictureUrl = item.pictures[0];
+
+    if (isFinite(price) && toString(price).length > 3) {
+      price = price.toLocaleString('ru');
+    }
+
+    div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <img src=\"").concat(pictureUrl, "\" alt=\"product-img\" class=\"product__img\">\n                <i class=\"products__favorites-icon fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
+    wrap.appendChild(div);
   });
 }
 
@@ -1645,7 +1656,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
   var productUrl = './js/json/products.json',
-      usersUrl = './js/json/sellers.json'; // create all products
+      usersUrl = './js/json/sellers.json'; // create all products at start
 
   var productWrap = document.querySelector('.products div div');
   createProduct(productWrap, requestData(productUrl), requestData(usersUrl)); // search products

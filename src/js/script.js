@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let productUrl = './js/json/products.json',
     usersUrl = './js/json/sellers.json';
     
-    // create all products
+    // create all products at start
     let productWrap = document.querySelector('.products div div');
     createProduct(productWrap, requestData(productUrl), requestData(usersUrl));
 
