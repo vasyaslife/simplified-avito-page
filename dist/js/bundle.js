@@ -1607,33 +1607,6 @@ module.exports = requestData;
 
 /***/ }),
 
-/***/ "./src/js/modules/search-items.js":
-/*!****************************************!*\
-  !*** ./src/js/modules/search-items.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function searchItems(searchBtn, form) {
-  var products = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var users = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  searchBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    var formData = new FormData(form);
-    var searchInfo = {};
-    formData.forEach(function (value, key) {
-      searchInfo[key] = value;
-    });
-    console.log(searchInfo);
-    console.log(products);
-    console.log(users);
-  });
-}
-
-module.exports = searchItems;
-
-/***/ }),
-
 /***/ "./src/js/script.js":
 /*!**************************!*\
   !*** ./src/js/script.js ***!
@@ -1650,9 +1623,9 @@ __webpack_require__(/*! formdata-polyfill */ "./node_modules/formdata-polyfill/f
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  var searchItems = __webpack_require__(/*! ./modules/search-items.js */ "./src/js/modules/search-items.js"),
-      requestData = __webpack_require__(/*! ./modules/request-data.js */ "./src/js/modules/request-data.js"),
-      createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js"); // url to data
+  var requestData = __webpack_require__(/*! ./modules/request-data.js */ "./src/js/modules/request-data.js"),
+      // searchItems = require('./modules/search-items.js'),
+  createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js"); // url to data
 
 
   var productUrl = './js/json/products.json',
@@ -1662,8 +1635,29 @@ window.addEventListener('DOMContentLoaded', function () {
   createProduct(productWrap, requestData(productUrl), requestData(usersUrl)); // search products
 
   var searchBtn = document.querySelector('.search__btn'),
-      searchForm = document.querySelector('.search__form');
-  searchItems(searchBtn, searchForm, requestData(productUrl), requestData(usersUrl));
+      searchForm = document.querySelector('.search__form'); // searchItems(searchBtn, searchForm, requestData(productUrl), requestData(usersUrl));
+
+  searchBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var products = requestData(productUrl);
+    var formData = new FormData(searchForm);
+    var searchInfo = {};
+    formData.forEach(function (value, key) {
+      searchInfo[key] = value;
+    }); // sort by cheaper
+    // products.filter((item) => item.price);
+
+    var resultProducts = products.filter(function (item) {
+      return isFinite(item.price);
+    });
+    var resultProductsOne = resultProducts.sort(function (a, b) {
+      console.log(a.price, b.price);
+      return a.price > b.price;
+    }); // console.log(searchInfo);
+    // console.log(requestData(productUrl));
+
+    console.log(resultProductsOne); // console.log(requestData(usersUrl));
+  });
 });
 
 /***/ })
