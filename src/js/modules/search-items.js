@@ -27,9 +27,12 @@ function searchItems(searchForm, products = [], users = []) {
         if ( isFinite(searchInfo['price-from']) &&
         isFinite(searchInfo['price-to']) ) {
 
-            if ( searchInfo['price-from'] != '' && 
+            if (searchInfo['price-from'] > searchInfo['price-to']) {
+                alert('некорректно введены поля диапазона цен');
+                return [];            
+            } else if ( searchInfo['price-from'] != '' && 
             searchInfo['price-to'] != '' ) {
-                resultArr = sortByPrice(resultArr, '<>', searchInfo['price-from'], searchInfo['price-to']);            
+                resultArr = sortByPrice(resultArr, '<>', searchInfo['price-from'], searchInfo['price-to']);
             } else if (searchInfo['price-from'] != '') {
                 resultArr = sortByPrice(resultArr, '<', searchInfo['price-from']);            
             } else if (searchInfo['price-to'] != '') {

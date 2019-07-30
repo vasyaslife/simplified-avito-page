@@ -113,6 +113,10 @@ transform: scale(0.95)
     color: #19adff;
 }
 
+.products__favorites-icon:active {
+    transform: scale(0.90)
+}
+
 .products__favorites-icon_active {
     color: #19adff;
 }

@@ -1577,6 +1577,35 @@ function createProduct(wrap) {
     div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <img src=\"").concat(pictureUrl, "\" alt=\"product-img\" class=\"product__img\">\n                <i class=\"").concat(favIcon, " fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
     wrap.appendChild(div);
   });
+  var favElements = document.querySelectorAll('.fa-heart');
+  favElements.forEach(function (item) {
+    item.addEventListener('click', function (event) {
+      if (event.target.classList.contains('products__favorites-icon_active')) {
+        event.target.classList.remove('products__favorites-icon_active');
+        var elemIndex = event.target.parentNode.parentNode.getAttribute('key'),
+            localArr = JSON.parse(localStorage.getItem('favList')).split(','),
+            localArrIndex = localArr.indexOf(elemIndex);
+        localArr.splice(localArrIndex, 1);
+        localArr = localArr.join(',');
+        localStorage.setItem('favList', JSON.stringify(localArr));
+        console.log(localArr);
+      } else {
+        event.target.classList.add('products__favorites-icon_active');
+
+        var _elemIndex = event.target.parentNode.parentNode.getAttribute('key'),
+            _localArr = JSON.parse(localStorage.getItem('favList'));
+
+        if (_localArr != '') {
+          _localArr += ',' + _elemIndex;
+        } else {
+          _localArr += _elemIndex;
+        }
+
+        console.log(_localArr);
+        localStorage.setItem('favList', JSON.stringify(_localArr));
+      }
+    });
+  });
 }
 
 module.exports = createProduct;
@@ -1646,7 +1675,10 @@ function searchItems(searchForm) {
   }
 
   if (isFinite(searchInfo['price-from']) && isFinite(searchInfo['price-to'])) {
-    if (searchInfo['price-from'] != '' && searchInfo['price-to'] != '') {
+    if (searchInfo['price-from'] > searchInfo['price-to']) {
+      alert('некорректно введены поля диапазона цен');
+      return [];
+    } else if (searchInfo['price-from'] != '' && searchInfo['price-to'] != '') {
       resultArr = sortByPrice(resultArr, '<>', searchInfo['price-from'], searchInfo['price-to']);
     } else if (searchInfo['price-from'] != '') {
       resultArr = sortByPrice(resultArr, '<', searchInfo['price-from']);
@@ -1723,10 +1755,12 @@ window.addEventListener('DOMContentLoaded', function () {
 
   var requestData = __webpack_require__(/*! ./modules/request-data.js */ "./src/js/modules/request-data.js"),
       searchItems = __webpack_require__(/*! ./modules/search-items.js */ "./src/js/modules/search-items.js"),
-      createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js");
+      createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js"); // create empty local field for fav list
+
 
   if (!!!localStorage.getItem('favList')) {
-    localStorage.setItem('favList', []);
+    var emptyArr = '';
+    localStorage.setItem('favList', JSON.stringify(emptyArr));
   } // url to data
 
 

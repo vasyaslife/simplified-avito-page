@@ -8,8 +8,10 @@ window.addEventListener('DOMContentLoaded', () => {
         searchItems = require('./modules/search-items.js'),
         createProduct = require('./modules/create-product.js');
 
+    // create empty local field for fav list
     if ( !(!!localStorage.getItem('favList')) ) {
-        localStorage.setItem('favList', []);
+        let emptyArr = '';
+        localStorage.setItem('favList', JSON.stringify(emptyArr));
     }
 
     // url to data

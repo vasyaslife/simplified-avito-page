@@ -63,6 +63,43 @@ function createProduct(wrap, products = [], users = []) {
 
         wrap.appendChild(div);
     }); 
+
+    let favElements = document.querySelectorAll('.fa-heart');
+
+    favElements.forEach(function(item) {
+        item.addEventListener('click', function(event) {
+            if ( event.target.classList.contains('products__favorites-icon_active') ) {
+
+                event.target.classList.remove('products__favorites-icon_active');
+
+                let elemIndex = event.target.parentNode.parentNode.getAttribute('key'),
+                localArr = JSON.parse(localStorage.getItem('favList')).split(','),
+                localArrIndex = localArr.indexOf(elemIndex);
+
+                localArr.splice(localArrIndex, 1);
+                localArr = localArr.join(',');
+                localStorage.setItem('favList', JSON.stringify(localArr));
+
+                console.log(localArr);
+            } else {
+
+                event.target.classList.add('products__favorites-icon_active');
+
+                let elemIndex = event.target.parentNode.parentNode.getAttribute('key'),
+                localArr = JSON.parse(localStorage.getItem('favList'));
+
+                if (localArr != '') {
+                    localArr +=',' + elemIndex;
+                } else {
+                    localArr += elemIndex;
+                }
+
+                console.log(localArr);
+
+                localStorage.setItem('favList', JSON.stringify(localArr));
+            }
+        });
+    });
 }
 
 module.exports = createProduct;
