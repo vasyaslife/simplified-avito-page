@@ -1563,13 +1563,18 @@ function createProduct(wrap) {
     var price = item.price || 'Цена не указана',
         rating = users[item.relationships.seller].rating,
         userName = users[item.relationships.seller].name,
-        pictureUrl = item.pictures[0];
+        pictureUrl = item.pictures[0],
+        favIcon = 'products__favorites-icon';
+
+    if (localStorage.getItem('favList').indexOf(item.id) + 1) {
+      favIcon += ' products__favorites-icon_active';
+    }
 
     if (isFinite(price) && toString(price).length > 3) {
       price = price.toLocaleString('ru');
     }
 
-    div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <img src=\"").concat(pictureUrl, "\" alt=\"product-img\" class=\"product__img\">\n                <i class=\"products__favorites-icon fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
+    div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <img src=\"").concat(pictureUrl, "\" alt=\"product-img\" class=\"product__img\">\n                <i class=\"").concat(favIcon, " fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
     wrap.appendChild(div);
   });
 }
@@ -1607,6 +1612,99 @@ module.exports = requestData;
 
 /***/ }),
 
+/***/ "./src/js/modules/search-items.js":
+/*!****************************************!*\
+  !*** ./src/js/modules/search-items.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function searchItems(searchForm) {
+  var products = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var users = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var formData = new FormData(searchForm);
+  var searchInfo = {};
+  formData.forEach(function (value, key) {
+    searchInfo[key] = value;
+  });
+  var resultArr = [];
+
+  for (var i = 0; i < products.length; i++) {
+    resultArr[i] = products[i];
+  }
+
+  if (searchInfo['sort-select'] == 'cheaper') {
+    resultArr = sortByCheaper(resultArr);
+  }
+
+  if (searchInfo['favorites']) {
+    resultArr = sortByFav(resultArr, localStorage.getItem('favList'));
+  }
+
+  if (searchInfo['type-select'] != 'none') {
+    resultArr = sortByType(resultArr, searchInfo['type-select']);
+  }
+
+  if (isFinite(searchInfo['price-from']) && isFinite(searchInfo['price-to'])) {
+    if (searchInfo['price-from'] != '' && searchInfo['price-to'] != '') {
+      resultArr = sortByPrice(resultArr, '<>', searchInfo['price-from'], searchInfo['price-to']);
+    } else if (searchInfo['price-from'] != '') {
+      resultArr = sortByPrice(resultArr, '<', searchInfo['price-from']);
+    } else if (searchInfo['price-to'] != '') {
+      resultArr = sortByPrice(resultArr, '>', 0, searchInfo['price-to']);
+    }
+  } else {
+    alert('некорректно введены поля диапазона цен');
+    return [];
+  } // sort by cheaper, result without item with empty price field
+
+
+  function sortByCheaper(arr) {
+    return arr.filter(function (item) {
+      return isFinite(item.price);
+    }).sort(function (a, b) {
+      return a.price - b.price;
+    });
+  } // type sort
+
+
+  function sortByType(arr, type) {
+    return arr.filter(function (item) {
+      return item.category == type;
+    });
+  } // fav sort
+
+
+  function sortByFav(arr, favList) {
+    return arr.filter(function (item) {
+      return favList.indexOf(item.id) + 1;
+    });
+  } // price sort
+
+
+  function sortByPrice(arr, type, priceFrom, priceTo) {
+    if (type == '<>') {
+      return arr.filter(function (item) {
+        return isFinite(item.price) && item.price <= +priceTo && item.price >= +priceFrom;
+      });
+    } else if (type == '<') {
+      return arr.filter(function (item) {
+        return isFinite(item.price) && item.price >= +priceFrom;
+      });
+    } else if (type == '>') {
+      return arr.filter(function (item) {
+        return isFinite(item.price) && item.price <= +priceTo;
+      });
+    }
+  }
+
+  return resultArr;
+}
+
+module.exports = searchItems;
+
+/***/ }),
+
 /***/ "./src/js/script.js":
 /*!**************************!*\
   !*** ./src/js/script.js ***!
@@ -1624,8 +1722,12 @@ window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   var requestData = __webpack_require__(/*! ./modules/request-data.js */ "./src/js/modules/request-data.js"),
-      // searchItems = require('./modules/search-items.js'),
-  createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js"); // url to data
+      searchItems = __webpack_require__(/*! ./modules/search-items.js */ "./src/js/modules/search-items.js"),
+      createProduct = __webpack_require__(/*! ./modules/create-product.js */ "./src/js/modules/create-product.js");
+
+  if (!!!localStorage.getItem('favList')) {
+    localStorage.setItem('favList', []);
+  } // url to data
 
 
   var productUrl = './js/json/products.json',
@@ -1635,28 +1737,11 @@ window.addEventListener('DOMContentLoaded', function () {
   createProduct(productWrap, requestData(productUrl), requestData(usersUrl)); // search products
 
   var searchBtn = document.querySelector('.search__btn'),
-      searchForm = document.querySelector('.search__form'); // searchItems(searchBtn, searchForm, requestData(productUrl), requestData(usersUrl));
-
+      searchForm = document.querySelector('.search__form');
   searchBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    var products = requestData(productUrl);
-    var formData = new FormData(searchForm);
-    var searchInfo = {};
-    formData.forEach(function (value, key) {
-      searchInfo[key] = value;
-    }); // sort by cheaper
-    // products.filter((item) => item.price);
-
-    var resultProducts = products.filter(function (item) {
-      return isFinite(item.price);
-    });
-    var resultProductsOne = resultProducts.sort(function (a, b) {
-      console.log(a.price, b.price);
-      return a.price > b.price;
-    }); // console.log(searchInfo);
-    // console.log(requestData(productUrl));
-
-    console.log(resultProductsOne); // console.log(requestData(usersUrl));
+    var products = searchItems(searchForm, requestData(productUrl), requestData(usersUrl));
+    createProduct(productWrap, products, requestData(usersUrl));
   });
 });
 

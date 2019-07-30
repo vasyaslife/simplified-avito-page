@@ -8,7 +8,13 @@ function createProduct(wrap, products = [], users = []) {
     let price = item.price || 'Цена не указана',
     rating = users[item.relationships.seller].rating,
     userName = users[item.relationships.seller].name,
-    pictureUrl = item.pictures[0];
+    pictureUrl = item.pictures[0],
+    favIcon = 'products__favorites-icon';
+
+    if (localStorage.getItem('favList').indexOf(item.id) + 1) {
+        favIcon += ' products__favorites-icon_active';
+    }
+    
 
     if (isFinite(price) && toString(price).length > 3) {
         price = price.toLocaleString('ru');
@@ -17,7 +23,7 @@ function createProduct(wrap, products = [], users = []) {
         div.innerHTML = `<div class="products__item" key=${item.id}>
             <div class="products__img-box">
                 <img src="${ pictureUrl }" alt="product-img" class="product__img">
-                <i class="products__favorites-icon fas fa-heart"></i>
+                <i class="${ favIcon } fas fa-heart"></i>
             </div>
             <div class="products__content-block">
                 <div class="products__info">
