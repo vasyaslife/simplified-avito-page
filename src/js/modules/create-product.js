@@ -79,8 +79,6 @@ function createProduct(wrap, products = [], users = []) {
                 localArr.splice(localArrIndex, 1);
                 localArr = localArr.join(',');
                 localStorage.setItem('favList', JSON.stringify(localArr));
-
-                console.log(localArr);
             } else {
 
                 event.target.classList.add('products__favorites-icon_active');
@@ -93,8 +91,6 @@ function createProduct(wrap, products = [], users = []) {
                 } else {
                     localArr += elemIndex;
                 }
-
-                console.log(localArr);
 
                 localStorage.setItem('favList', JSON.stringify(localArr));
             }

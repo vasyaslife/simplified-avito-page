@@ -163,11 +163,13 @@ transform: scale(0.95)
 .user__rating {
     height: 19px;
     position:relative;
-    width: 115px;
+    width: 90px;
 }
 
 .user__rating-text {
-    margin-right: 100px;
+    position: absolute;
+    top: 0;
+    left: -26px;
     text-align: right;
     font-weight: 500;
 }
@@ -176,7 +178,6 @@ transform: scale(0.95)
     display: flex;
     color: #c1c1c1;
     position: absolute;
-    left: 27px;
     top: 2px;
 }
 
@@ -184,7 +185,6 @@ transform: scale(0.95)
     display: flex;
     color: #FFBC0B;
     position: absolute;
-    left:27px;
     overflow:hidden;
     top: 2px;
 }

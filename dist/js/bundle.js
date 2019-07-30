@@ -1588,7 +1588,6 @@ function createProduct(wrap) {
         localArr.splice(localArrIndex, 1);
         localArr = localArr.join(',');
         localStorage.setItem('favList', JSON.stringify(localArr));
-        console.log(localArr);
       } else {
         event.target.classList.add('products__favorites-icon_active');
 
@@ -1601,7 +1600,6 @@ function createProduct(wrap) {
           _localArr += _elemIndex;
         }
 
-        console.log(_localArr);
         localStorage.setItem('favList', JSON.stringify(_localArr));
       }
     });
