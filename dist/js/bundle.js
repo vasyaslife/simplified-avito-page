@@ -1559,7 +1559,7 @@ function createProduct(wrap) {
   wrap.innerHTML = '';
   products.forEach(function (item) {
     var div = document.createElement('div');
-    div.classList.add('col-6');
+    div.classList.add('col-md-12', 'col-lg-6');
     var price = item.price || 'Цена не указана',
         rating = users[item.relationships.seller].rating,
         userName = users[item.relationships.seller].name,

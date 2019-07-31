@@ -3,7 +3,7 @@ function createProduct(wrap, products = [], users = []) {
 
     products.forEach(function(item) {
     let div = document.createElement('div');
-    div.classList.add('col-6');
+    div.classList.add('col-md-12', 'col-lg-6');
 
     let price = item.price || 'Цена не указана',
     rating = users[item.relationships.seller].rating,

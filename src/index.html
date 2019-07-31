@@ -31,7 +31,7 @@
             <div class="search search__wrap">
                 <form class='search__form'>
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-sm-12 col-md-4 d-flex justify-content-center">
                             <select class="search__type-select select" name="type-select" id="type-select">
                                 <option value="none" selected>Выберите тип товара</option>
                                 <option value="immovable">недвижимость</option>
@@ -41,14 +41,14 @@
                             </select>
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-sm-12 col-md-4">
                             <div class="search__price-wrap">
                                 <input class="select search__price-input" type="text" name="price-from" placeholder="Цена от" require>
                                 <input class="select search__price-input" type="text" name="price-to" placeholder="до, руб." require>
                             </div>
                         </div>
 
-                        <div class="col-4 d-flex justify-content-end">
+                        <div class="col-sm-12 col-md-4 d-flex justify-content-end justify-content-center">
                             <select class="search__sort-select select" name="sort-select" id="sort-select">
                                 <option value="popularity">По популярности</option>
                                 <option value="cheaper">Дешевле</option>
@@ -74,49 +74,6 @@
     <main class="products products__wrap">
         <div class="container">
             <div class="row ">
-                    <div class="products__item">
-                            <div class="products__img-box">
-                                <div class="product__slider">
-                                    <img src="#" alt="product-img" class="product__img">
-                                </div>
-                                <i class="products__favorites-icon fas fa-heart"></i>
-                            </div>
-                            <div class="products__content-block">
-                                <div class="products__info">
-                                    <h2 class="title title__h2 products__title">
-                                    
-                                    </h2>
-                                    <p class="products__price">
- 
-                                    </p>
-                                </div>
-
-                                <div class="products__user-info user">
-                                    <p class="user__name">
-                                      
-                                    </p>
-                                    <div class="user__rating">
-                                        <p class="user__rating-text">
-                                            ${ rating }
-                                        </p>
-                                        <div class="user__stars_bgr">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-                                        <div class="user__stars" style="width: 30px">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
             </div>
         </div>
