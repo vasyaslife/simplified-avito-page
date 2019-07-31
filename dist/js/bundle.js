@@ -1563,8 +1563,18 @@ function createProduct(wrap) {
     var price = item.price || 'Цена не указана',
         rating = users[item.relationships.seller].rating,
         userName = users[item.relationships.seller].name,
-        pictureUrl = item.pictures[0],
-        favIcon = 'products__favorites-icon';
+        pictures = '',
+        dots = '';
+    favIcon = 'products__favorites-icon';
+    item.pictures.forEach(function (item) {
+      pictures += "<img src=\"".concat(item, "\" alt=\"product-img\" class=\"product__img\">");
+
+      if (dots != '') {
+        dots += "<div class=\"dot\"></div>";
+      } else {
+        dots += "<div class=\"dot dot-active\"></div>";
+      }
+    });
 
     if (localStorage.getItem('favList').indexOf(item.id) + 1) {
       favIcon += ' products__favorites-icon_active';
@@ -1574,7 +1584,7 @@ function createProduct(wrap) {
       price = price.toLocaleString('ru');
     }
 
-    div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <img src=\"").concat(pictureUrl, "\" alt=\"product-img\" class=\"product__img\">\n                <i class=\"").concat(favIcon, " fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
+    div.innerHTML = "<div class=\"products__item\" key=".concat(item.id, ">\n            <div class=\"products__img-box\">\n                <div class=\"product__slider slider\">\n\n                    ").concat(pictures, "\n\n                    <div class=\"slider__dots\">\n                        ").concat(dots, "\n                    </div>\n                </div>\n\n                <i class=\"").concat(favIcon, " fas fa-heart\"></i>\n            </div>\n            <div class=\"products__content-block\">\n                <div class=\"products__info\">\n                    <h2 class=\"title title__h2 products__title\">\n                        ").concat(item.title, "\n                    </h2>\n                    <p class=\"products__price\">\n                        ").concat(price, " \u20BD\n                    </p>\n                </div>\n                <div class=\"products__user-info user\">\n                    <p class=\"user__name\">\n                        ").concat(userName, "\n                    </p>\n                    <div class=\"user__rating\">\n                        <p class=\"user__rating-text\">\n                            ").concat(rating, "\n                        </p>\n                        <div class=\"user__stars_bgr\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                        <div class=\"user__stars\" style=\"width: ").concat(rating * 20, "%\">\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                            <i class=\"fa fa-star\" aria-hidden=\"true\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>");
     wrap.appendChild(div);
   });
   var favElements = document.querySelectorAll('.fa-heart');
@@ -1604,6 +1614,50 @@ function createProduct(wrap) {
       }
     });
   });
+  var productSlider = document.querySelectorAll('.product__slider');
+  productSlider.forEach(function (item) {
+    var slideIndex = 1,
+        dotsWrapper = item.querySelector('.slider__dots'),
+        slides = item.querySelectorAll('.product__img'),
+        dots = item.querySelectorAll('.dot'),
+        dotActiveName = 'dot-active';
+    slider(slideIndex, slides, dotsWrapper, dots, dotActiveName);
+  });
+
+  function slider(slideIndex, slides, dotsWrapper, dots, dotActiveName) {
+    showSlides(slideIndex);
+
+    function showSlides(n) {
+      if (n > slides.length) {
+        slideIndex = 1;
+      }
+
+      if (n < 1) {
+        slideIndex = slides.length;
+      }
+
+      slides.forEach(function (item) {
+        return item.style.display = 'none';
+      });
+      dots.forEach(function (item) {
+        return item.classList.remove(dotActiveName);
+      });
+      slides[slideIndex - 1].style.display = 'block';
+      dots[slideIndex - 1].classList.add(dotActiveName);
+    }
+
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+
+    dotsWrapper.addEventListener('click', function (event) {
+      for (var i = 0; i < dots.length; i++) {
+        if (event.target.classList.contains('dot') && event.target == dots[i]) {
+          currentSlide(++i);
+        }
+      }
+    });
+  }
 }
 
 module.exports = createProduct;
@@ -1673,7 +1727,7 @@ function searchItems(searchForm) {
   }
 
   if (isFinite(searchInfo['price-from']) && isFinite(searchInfo['price-to'])) {
-    if (searchInfo['price-from'] > searchInfo['price-to']) {
+    if (searchInfo['price-from'] > searchInfo['price-to'] && searchInfo['price-to'] != '') {
       alert('некорректно введены поля диапазона цен');
       return [];
     } else if (searchInfo['price-from'] != '' && searchInfo['price-to'] != '') {

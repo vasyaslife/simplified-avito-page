@@ -8,8 +8,19 @@ function createProduct(wrap, products = [], users = []) {
     let price = item.price || 'Цена не указана',
     rating = users[item.relationships.seller].rating,
     userName = users[item.relationships.seller].name,
-    pictureUrl = item.pictures[0],
+    pictures = '',
+    dots = ''
     favIcon = 'products__favorites-icon';
+
+    item.pictures.forEach(function(item) {
+        pictures += `<img src="${ item }" alt="product-img" class="product__img">`;
+
+        if (dots != '') {
+            dots += `<div class="dot"></div>`;
+        } else {
+            dots += `<div class="dot dot-active"></div>`;
+        }
+    });
 
     if (localStorage.getItem('favList').indexOf(item.id) + 1) {
         favIcon += ' products__favorites-icon_active';
@@ -22,7 +33,15 @@ function createProduct(wrap, products = [], users = []) {
 
         div.innerHTML = `<div class="products__item" key=${item.id}>
             <div class="products__img-box">
-                <img src="${ pictureUrl }" alt="product-img" class="product__img">
+                <div class="product__slider slider">
+
+                    ${ pictures }
+
+                    <div class="slider__dots">
+                        ${ dots }
+                    </div>
+                </div>
+
                 <i class="${ favIcon } fas fa-heart"></i>
             </div>
             <div class="products__content-block">
@@ -96,6 +115,53 @@ function createProduct(wrap, products = [], users = []) {
             }
         });
     });
+
+    let productSlider = document.querySelectorAll('.product__slider');
+
+    productSlider.forEach(function(item) {
+
+            let slideIndex = 1,
+            dotsWrapper = item.querySelector('.slider__dots'),
+            slides = item.querySelectorAll('.product__img'),
+            dots = item.querySelectorAll('.dot'),
+            dotActiveName = 'dot-active';
+
+        slider(slideIndex, slides, dotsWrapper, dots, dotActiveName);
+    });
+
+    function slider(slideIndex, slides, dotsWrapper, dots, dotActiveName) {
+
+        showSlides(slideIndex);
+    
+        function showSlides(n) {
+    
+            if (n > slides.length) {
+                slideIndex = 1;
+            } 
+            if (n < 1) {
+                slideIndex = slides.length;
+            }
+            slides.forEach((item) => item.style.display = 'none');
+    
+            dots.forEach((item) => item.classList.remove(dotActiveName));
+    
+            slides[slideIndex - 1].style.display = 'block';
+            dots[slideIndex - 1].classList.add(dotActiveName);
+        }
+    
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+    
+        dotsWrapper.addEventListener('click', (event) => {
+            for (let i = 0; i < dots.length; i++) {
+                if (event.target.classList.contains('dot') &&
+                event.target == dots[i]) {
+                    currentSlide(++i);
+                }
+            }
+        });
+    }
 }
 
 module.exports = createProduct;
