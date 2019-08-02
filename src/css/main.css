@@ -139,7 +139,7 @@ transform: scale(0.95)
 }
 
 .products__favorites-icon:hover {
-    color: #19adff;
+    transform: scale(1.1)
 }
 
 .products__favorites-icon:active {
@@ -148,10 +148,6 @@ transform: scale(0.95)
 
 .products__favorites-icon_active {
     color: #19adff;
-}
-
-.products__favorites-icon_active:hover {
-    color: powderblue;
 }
 
 .products__content-block {

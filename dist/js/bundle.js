@@ -1727,7 +1727,7 @@ function searchItems(searchForm) {
   }
 
   if (isFinite(searchInfo['price-from']) && isFinite(searchInfo['price-to'])) {
-    if (searchInfo['price-from'] > searchInfo['price-to'] && searchInfo['price-to'] != '') {
+    if (+searchInfo['price-from'] > +searchInfo['price-to'] && searchInfo['price-to'] != '') {
       alert('некорректно введены поля диапазона цен');
       return [];
     } else if (searchInfo['price-from'] != '' && searchInfo['price-to'] != '') {

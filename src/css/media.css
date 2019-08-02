@@ -46,4 +46,9 @@
     .products__user-info {
         text-align: center;
     }
+
+    .products__favorites-icon {
+        top: 35px;
+        left: 15px;
+    }
 }

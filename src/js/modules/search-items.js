@@ -27,7 +27,7 @@ function searchItems(searchForm, products = [], users = []) {
         if ( isFinite(searchInfo['price-from']) &&
         isFinite(searchInfo['price-to']) ) {
 
-            if (searchInfo['price-from'] > searchInfo['price-to'] &&
+            if (+searchInfo['price-from'] > +searchInfo['price-to'] &&
             searchInfo['price-to'] != '') {
                 alert('некорректно введены поля диапазона цен');
                 return [];            
