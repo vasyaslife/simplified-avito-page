@@ -22,10 +22,11 @@ function createProduct(wrap, products = [], users = []) {
         }
     });
 
-    if (localStorage.getItem('favList').indexOf(item.id) + 1) {
+
+    let favList = JSON.parse(localStorage.getItem('favList')).split(',');
+    if ( favList.some((favArr) => item.id == favArr) ) {
         favIcon += ' products__favorites-icon_active';
     }
-    
 
     if (isFinite(price) && toString(price).length > 3) {
         price = price.toLocaleString('ru');

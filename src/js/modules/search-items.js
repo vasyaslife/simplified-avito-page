@@ -19,7 +19,7 @@ function searchItems(searchForm, products = [], users = []) {
         }
 
         if (searchInfo['favorites']) {
-            resultArr = sortByFav(resultArr, localStorage.getItem('favList'));
+            resultArr = sortByFav(resultArr, JSON.parse(localStorage.getItem('favList')).split(',') );
         }
 
         if (searchInfo['type-select'] != 'none') {
@@ -72,7 +72,7 @@ function searchItems(searchForm, products = [], users = []) {
 
        // fav sort
         function sortByFav(arr, favList) {
-            return arr.filter((item) => favList.indexOf(item.id) + 1);
+            return arr.filter((item) => favList.some((favArr) => item.id == favArr));
         }
 
         // price sort

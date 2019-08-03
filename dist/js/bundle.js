@@ -1575,8 +1575,11 @@ function createProduct(wrap) {
         dots += "<div class=\"dot dot-active\"></div>";
       }
     });
+    var favList = JSON.parse(localStorage.getItem('favList')).split(',');
 
-    if (localStorage.getItem('favList').indexOf(item.id) + 1) {
+    if (favList.some(function (favArr) {
+      return item.id == favArr;
+    })) {
       favIcon += ' products__favorites-icon_active';
     }
 
@@ -1721,7 +1724,7 @@ function searchItems(searchForm) {
   }
 
   if (searchInfo['favorites']) {
-    resultArr = sortByFav(resultArr, localStorage.getItem('favList'));
+    resultArr = sortByFav(resultArr, JSON.parse(localStorage.getItem('favList')).split(','));
   }
 
   if (searchInfo['type-select'] != 'none') {
@@ -1779,7 +1782,9 @@ function searchItems(searchForm) {
 
   function sortByFav(arr, favList) {
     return arr.filter(function (item) {
-      return favList.indexOf(item.id) + 1;
+      return favList.some(function (favArr) {
+        return item.id == favArr;
+      });
     });
   } // price sort
 
