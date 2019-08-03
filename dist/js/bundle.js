@@ -1716,6 +1716,8 @@ function searchItems(searchForm) {
 
   if (searchInfo['sort-select'] == 'cheaper') {
     resultArr = sortByCheaper(resultArr);
+  } else if (searchInfo['sort-select'] == 'popularity') {
+    resultArr = sortByPopularity(resultArr, users);
   }
 
   if (searchInfo['favorites']) {
@@ -1749,6 +1751,22 @@ function searchItems(searchForm) {
     }).sort(function (a, b) {
       return a.price - b.price;
     });
+  } // sort by popularity
+
+
+  function sortByPopularity(arr, userArr) {
+    var userRating = userArr.sort(function (a, b) {
+      return b.rating - a.rating;
+    });
+    var result = [];
+    userRating.forEach(function (userItem) {
+      arr.filter(function (arrItems) {
+        return arrItems.relationships.seller == userItem.id;
+      }).forEach(function (arrItem) {
+        return result.push(arrItem);
+      });
+    });
+    return result;
   } // type sort
 
 

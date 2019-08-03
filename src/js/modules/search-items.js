@@ -14,6 +14,8 @@ function searchItems(searchForm, products = [], users = []) {
 
         if (searchInfo['sort-select'] == 'cheaper') {
             resultArr = sortByCheaper(resultArr);
+        } else if (searchInfo['sort-select'] == 'popularity') {
+            resultArr = sortByPopularity(resultArr, users);
         }
 
         if (searchInfo['favorites']) {
@@ -48,6 +50,19 @@ function searchItems(searchForm, products = [], users = []) {
         function sortByCheaper(arr) {
             return arr.filter((item) => isFinite(item.price))
             .sort((a, b) => a.price - b.price);
+        }
+
+        // sort by popularity
+        function sortByPopularity(arr, userArr) {
+            let userRating = userArr.sort((a, b) => b.rating - a.rating);
+            let result = [];
+
+            userRating.forEach((userItem) => {
+                arr.filter((arrItems) => arrItems.relationships.seller == userItem.id)
+                .forEach((arrItem) => result.push(arrItem));
+            });
+
+            return result;
         }
         
         // type sort
